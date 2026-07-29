@@ -39,8 +39,9 @@ export default async function handler(req, res) {
 
   try {
     const payload = JSON.parse(rawBody);
-    if (payload?.event && payload.event !== 'call_ended' && payload.event !== 'call_analyzed') {
-      return res.status(200).json({ ok: true, skipped: true });
+    if (payload?.event !== 'call_analyzed') {
+  return res.status(200).json({ ok: true, skipped: true });
+    }
     }
     const call = payload?.call || payload;
     const info = extractInfo(call);
