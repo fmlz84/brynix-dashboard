@@ -35,14 +35,14 @@ function LoginScreen({ onLogin }) {
       <div style={s.loginCard}>
         <div style={s.brand}>BRYNIX</div>
         <h1 style={s.loginTitle}>Suivi du standard</h1>
-        <p style={s.loginSub}>Connectez-vous pour voir l\u2019activité de votre assistant.</p>
+        <p style={s.loginSub}>Connectez-vous pour voir l’activité de votre assistant.</p>
         <label style={s.label}>Email</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={s.input} placeholder="vous@entreprise.com" />
         <label style={s.label}>Mot de passe</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={s.input} placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={s.input} placeholder="••••••••" />
         {error && <p style={s.errorText}>{error}</p>}
         <button onClick={handleLogin} style={s.submitBtn}>Se connecter</button>
-        {!supabase && <p style={s.demoNote}>Supabase non configuré \u2014 mode démo actif.</p>}
+        {!supabase && <p style={s.demoNote}>Supabase non configuré — mode démo actif.</p>}
       </div>
     </div>
   );
@@ -219,8 +219,8 @@ export default function App() {
         <h1 style={s.pageTitle}>Activité du standard</h1>
         <p style={s.pageSub}>
           {paused
-            ? "Votre assistant est en pause \u2014 les appels ne sont plus pris en charge."
-            : "30 derniers jours \u2014 chaque appel reçu par votre assistant, en direct."}
+            ? "Votre assistant est en pause — les appels ne sont plus pris en charge."
+            : "30 derniers jours — chaque appel reçu par votre assistant, en direct."}
         </p>
 
         {loading && <p style={s.emptyText}>Chargement...</p>}
