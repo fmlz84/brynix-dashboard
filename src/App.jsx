@@ -220,7 +220,7 @@ export default function App() {
         <p style={s.pageSub}>
           {paused
             ? "Votre assistant est en pause — les appels ne sont plus pris en charge."
-            : "30 derniers jours — chaque appel reçu par votre assistant, en direct."}
+            : "Historique complet — chaque appel reçu par votre assistant, en direct."}
         </p>
 
         {loading && <p style={s.emptyText}>Chargement...</p>}
