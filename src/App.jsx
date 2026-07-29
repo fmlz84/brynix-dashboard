@@ -146,7 +146,6 @@ function FaqPanel({ faqs, setFaqs, saveFaq, deleteFaq }) {
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [paused, setPaused] = useState(false);
   const [filter, setFilter] = useState('Tous');
   const [calls, setCalls] = useState([]);
   const [faqs, setFaqs] = useState([]);
@@ -208,20 +207,13 @@ export default function App() {
       <header style={s.header}>
         <div style={s.brand}>BRYNIX</div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <button style={paused ? s.pausedBtn : s.pauseBtn} onClick={() => setPaused(!paused)}>
-            {paused ? '⏸ En pause' : '⏸ Mettre en pause'}
-          </button>
           <button style={s.logoutBtn} onClick={() => setLoggedIn(false)}>Se déconnecter</button>
         </div>
       </header>
 
       <main style={s.main}>
         <h1 style={s.pageTitle}>Activité du standard</h1>
-        <p style={s.pageSub}>
-          {paused
-            ? "Votre assistant est en pause — les appels ne sont plus pris en charge."
-            : "Historique complet — chaque appel reçu par votre assistant, en direct."}
-        </p>
+        <p style={s.pageSub}>Historique complet — chaque appel reçu par votre assistant, en direct.</p>
 
         {loading && <p style={s.emptyText}>Chargement...</p>}
 
@@ -272,8 +264,6 @@ const s = {
   errorText: { color: '#FF6B35', fontSize: 12, marginTop: 10 },
   demoNote: { color: '#5E6B63', fontSize: 11, marginTop: 14, textAlign: 'center' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 28px', borderBottom: '1px solid #1D2620', flexWrap: 'wrap', gap: 10 },
-  pauseBtn: { background: 'transparent', border: '1px solid #2C3830', borderRadius: 6, padding: '7px 12px', color: '#8A9A90', fontSize: 12, cursor: 'pointer' },
-  pausedBtn: { background: '#2A1D14', border: '1px solid #FF6B35', borderRadius: 6, padding: '7px 12px', color: '#FF6B35', fontSize: 12, cursor: 'pointer' },
   logoutBtn: { background: 'transparent', border: '1px solid #2C3830', borderRadius: 6, padding: '7px 12px', color: '#8A9A90', fontSize: 12, cursor: 'pointer' },
   main: { maxWidth: 980, margin: '0 auto', padding: '32px 20px 80px' },
   pageTitle: { fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, margin: '0 0 4px' },
