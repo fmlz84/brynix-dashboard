@@ -9,20 +9,6 @@ const RESULT_STYLES = {
   'Hors sujet': { color: '#5E6B63', label: 'Hors sujet' },
 };
 
-const DEMO_CALLS = [
-  { id: 1, nom: 'Test Test', tel: '+33 6 12 34 56 78', resultat: 'Qualifié + RDV', resume: "Rénovation d'allée à Lyon, propriétaire, projet urgent (2 semaines), budget non défini. RDV réservé lundi 27 juillet 11h.", date: '2026-07-25T17:02:00Z' },
-  { id: 2, nom: 'Karim Belhadj', tel: '+33 6 22 33 44 55', resultat: 'Qualifié sans RDV', resume: "Extension de maison, réflexion en cours, pas de timing précis. Documentation envoyée par email.", date: '2026-07-24T14:30:00Z' },
-  { id: 3, nom: 'Amel Trabelsi', tel: '+33 6 33 44 55 66', resultat: 'Non qualifié', resume: "Demande de devis peinture, hors périmètre des services proposés.", date: '2026-07-24T09:15:00Z' },
-  { id: 4, nom: 'Numéro inconnu', tel: '+33 6 44 55 66 77', resultat: 'Hors sujet', resume: "Faux numéro, l'appelant cherchait un autre service.", date: '2026-07-23T16:45:00Z' },
-  { id: 5, nom: 'Sophie Marchand', tel: '+33 6 55 66 77 88', resultat: 'Qualifié + RDV', resume: "Toiture à refaire suite à une fuite, propriétaire, urgent. RDV réservé mercredi 29 juillet 9h.", date: '2026-07-23T11:20:00Z' },
-];
-
-const DEFAULT_FAQ = [
-  { id: 1, q: 'Horaires d\u2019ouverture', a: 'Du lundi au vendredi, 8h \u2013 18h.' },
-  { id: 2, q: 'Zone d\u2019intervention', a: 'Lyon et un rayon de 40 km autour.' },
-  { id: 3, q: 'Devis gratuit ?', a: 'Oui, premier devis toujours gratuit et sans engagement.' },
-];
-
 function fmtDate(iso) {
   const d = new Date(iso);
   return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) + ' · ' +
@@ -36,7 +22,6 @@ function LoginScreen({ onLogin }) {
 
   async function handleLogin() {
     if (!supabase) {
-      // Pas de Supabase configuré -> mode démo, on laisse entrer
       onLogin();
       return;
     }
@@ -163,11 +148,10 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [paused, setPaused] = useState(false);
   const [filter, setFilter] = useState('Tous');
-  const [calls, setCalls] = useState(DEMO_CALLS);
-  const [faqs, setFaqs] = useState(DEFAULT_FAQ);
+  const [calls, setCalls] = useState([]);
+  const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Charge les vraies données depuis Supabase si configuré, sinon garde la démo
   useEffect(() => {
     if (!loggedIn || !supabase) return;
     setLoading(true);
@@ -197,7 +181,6 @@ export default function App() {
   const total = calls.length;
   const rdv = calls.filter((c) => c.resultat === 'Qualifié + RDV').length;
   const aRelancer = calls.filter((c) => c.resultat === 'Qualifié sans RDV').length;
-  const manques = calls.filter((c) => c.resultat === 'Hors sujet' || c.resultat === 'Non qualifié').length;
 
   const filtered = useMemo(() => {
     if (filter === 'Tous') return calls;
@@ -246,7 +229,6 @@ export default function App() {
           <StatCard label="Appels reçus" value={total} accent="#4A5D52" />
           <StatCard label="RDV pris" value={rdv} accent="#2ECC71" />
           <StatCard label="À relancer" value={aRelancer} accent="#FF6B35" />
-          <StatCard label="Auraient été manqués" value={manques} accent="#5E6B63" />
         </div>
 
         <div style={s.grid}>
