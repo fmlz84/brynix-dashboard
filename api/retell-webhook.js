@@ -16,14 +16,13 @@ function verifyRetellSignature(rawBody, signature, apiKey) {
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(digest));
 }
 
-function mapResultat(payload) {
-  const analysis = payload?.call_analysis || {};
-  const bookedMeeting = analysis.booked_meeting || payload?.metadata?.booked_meeting;
-  const successful = analysis.call_successful;
-  if (bookedMeeting) return 'Qualifié + RDV';
-  if (successful === false) return 'Hors sujet';
-  if (successful === true) return 'Qualifié sans RDV';
-  return 'Non qualifié';
+function extractInfo(call) {
+  const data = call?.call_analysis?.custom_analysis_data || {};
+  return {
+    nom: data.nom_prospect || call?.from_number || 'Inconnu',
+    resultat: data.resultat || 'Non qualifié',
+    resume: call?.call_analysis?.call_summary || 'Résumé non disponible',
+  };
 }
 
 export const config = { api: { bodyParser: false } };
@@ -44,16 +43,20 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, skipped: true });
     }
     const call = payload?.call || payload;
+    const info = extractInfo(call);
     const row = {
-      nom: call?.metadata?.nom_prospect || call?.from_number || 'Inconnu',
+      nom: info.nom,
       tel: call?.from_number || call?.to_number || null,
-      resultat: mapResultat(payload),
-      resume: call?.call_analysis?.call_summary || call?.transcript_summary || 'Résumé non disponible',
+      resultat: info.resultat,
+      resume: info.resume,
       date: call?.start_timestamp ? new Date(call.start_timestamp).toISOString() : new Date().toISOString(),
       retell_call_id: call?.call_id || null,
     };
     const { error } = await supabaseAdmin.from('brynix_calls').insert(row);
     if (error) {
+      if (error.code === '23505') {
+        return res.status(200).json({ ok: true, duplicate: true });
+      }
       console.error('Erreur insertion Supabase:', error);
       return res.status(500).json({ error: error.message });
     }
