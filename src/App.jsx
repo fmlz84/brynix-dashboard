@@ -178,8 +178,7 @@ export default function App() {
         .order('date', { ascending: false });
       if (callsData) setCalls(callsData);
 
-      const { data: faqData } = await supabase.from('brynix_faqs').select('*');
-      if (faqData && faqData.length) setFaqs(faqData);
+      if (faqData) setFaqs(faqData);
 
       setLoading(false);
     })();
