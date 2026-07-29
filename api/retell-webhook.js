@@ -52,4 +52,14 @@ export default async function handler(req, res) {
       date: call?.start_timestamp ? new Date(call.start_timestamp).toISOString() : new Date().toISOString(),
       retell_call_id: call?.call_id || null,
     };
-    const { error } = await
+    const { error } = await supabaseAdmin.from('brynix_calls').insert(row);
+    if (error) {
+      console.error('Erreur insertion Supabase:', error);
+      return res.status(500).json({ error: error.message });
+    }
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('Erreur webhook Retell:', err);
+    return res.status(500).json({ error: 'Erreur interne' });
+  }
+}
